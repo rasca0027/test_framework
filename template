@@ -1,17 +1,17 @@
 import unittest
-import {{ module }}
+from test_framework.{{ module }} import *
 
 class {{ method }}Test(unittest.TestCase):
     {% for data in value %}
     def test_{{ method }}_{{ value.index(data) }}(self):
         args = {{ data }}
         {% if answer[value.index(data)][0] != 'error' %} 
-        self.assertEqual( {{ module }}.{{ method }}(*args), "{{ answer[value.index(data)] }}" )
+        self.assertEqual( {{ method }}(*args), {{ answer[value.index(data)] }} )
         {% else %}
         try:
-             {{ module }}.{{ method }}(*args) 
+             {{ method }}(*args) 
         except Exception, inst:
-            self.assertEqual( str(inst.message), {{ answer[value.index(data)][1] }} )
+            self.assertEqual( str(inst.message), "{{ answer[value.index(data)][1] }}" )
         {% endif %}
     {% endfor %}
 

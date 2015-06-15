@@ -17,7 +17,6 @@ def generator(module, method, value):
 
     output = template.render(module=module, method=method, value=value, answer=answer)
 
-    print output
     with open('./test_cases/test_' + method + '.py', 'w') as output_file:
         output_file.write(output)
 

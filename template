@@ -2,16 +2,27 @@ import unittest
 from test_framework.{{ module }} import *
 
 class {{ method }}Test(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(self):
+        self.file = open('{{ method }}_report', 'w')
+    
+    @classmethod
+    def tearDownClass(self):
+        self.file.close()
+
     {% for data in value %}
-    def test_{{ method }}_{{ value.index(data) }}(self):
+    def test_{{ method }}_{{ loop.index0 }}(self):
         args = {{ data }}
-        {% if answer[value.index(data)][0] != 'error' %} 
-        self.assertEqual( {{ method }}(*args), {{ answer[value.index(data)] }} )
+        {% if answer[loop.index0][0] != 'error' %} 
+        self.assertEqual( {{ method }}(*args), {{ answer[loop.index0] }} )
+        self.file.write('''{{ method }}( {{ data }} ) = {{ answer[loop.index0] }}\n''')
         {% else %}
         try:
              {{ method }}(*args) 
         except Exception, inst:
-            self.assertEqual( str(inst.message), "{{ answer[value.index(data)][1] }}" )
+            self.assertEqual( str(inst.message), "{{ answer[loop.index0][1] }}" )
+            self.file.write('''{{ method }}( {{ data }} ) => error {{ answer[loop.index0][1] }}\n''')
         {% endif %}
     {% endfor %}
 
